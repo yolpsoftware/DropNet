@@ -2,47 +2,76 @@
 using RestSharp;
 using System;
 using DropNet.Authenticators;
+using DropNet.Exceptions;
 
 namespace DropNet
 {
     public partial class DropNetClient
     {
-
-        public void LoginAsync(string email, string password, Action<RestResponse<UserLogin>> callback)
+        /// <summary>
+        /// Gets a token from the almightly dropbox.com (Token cant be used until authorized!)
+        /// </summary>
+        public void GetTokenAsync(Action<UserLogin> success, Action<DropboxException> failure)
         {
-            _restClient.BaseUrl = _apiBaseUrl;
+            _restClient.BaseUrl = ApiBaseUrl;
             _restClient.Authenticator = new OAuthAuthenticator(_restClient.BaseUrl, _apiKey, _appsecret);
 
-            var request = _requestHelper.CreateLoginRequest(_apiKey, email, password);
+            var request = _requestHelper.CreateTokenRequest();
 
-            _restClient.ExecuteAsync<UserLogin>(request, (restResponse) =>
+            ExecuteAsync(ApiType.Base, request, response =>
             {
-                _userLogin = restResponse.Data;
-                callback(restResponse);
-			});
-
+                var userLogin = GetUserLoginFromParams(response.Content);
+                UserLogin = userLogin;
+                success(userLogin);
+            }, failure);
         }
 
-        public void Account_InfoAsync(Action<RestResponse<AccountInfo>> callback)
+        /// <summary>
+        /// Converts a request token into an Access token after the user has authorized access via dropbox.com
+        /// </summary>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        public void GetAccessTokenAsync(Action<UserLogin> success, Action<DropboxException> failure)
+        {
+            _restClient.BaseUrl = ApiBaseUrl;
+            _restClient.Authenticator = new OAuthAuthenticator(_restClient.BaseUrl, _apiKey, _appsecret, UserLogin.Token, UserLogin.Secret);
+
+            var request = _requestHelper.CreateAccessTokenRequest();
+
+            ExecuteAsync(ApiType.Base, request, response =>
+            {
+                var userLogin = GetUserLoginFromParams(response.Content);
+                UserLogin = userLogin;
+                success(userLogin);
+            }, failure);
+        }
+
+        /// <summary>
+        /// Gets AccountInfo
+        /// </summary>
+        /// <param name="success"></param>
+        /// <param name="failure"></param>
+        public void AccountInfoAsync(Action<AccountInfo> success, Action<DropboxException> failure)
         {
             //This has to be here as Dropbox change their base URL between calls
-            _restClient.BaseUrl = _apiBaseUrl;
-            _restClient.Authenticator = new OAuthAuthenticator(_restClient.BaseUrl, _apiKey, _appsecret, _userLogin.Token, _userLogin.Secret);
+            _restClient.BaseUrl = ApiBaseUrl;
+            _restClient.Authenticator = new OAuthAuthenticator(_restClient.BaseUrl, _apiKey, _appsecret, UserLogin.Token, UserLogin.Secret);
 
             var request = _requestHelper.CreateAccountInfoRequest();
 
-            _restClient.ExecuteAsync<AccountInfo>(request, callback);
+            ExecuteAsync(ApiType.Base, request, success, failure);
         }
 
-        public void CreateAccountAsync(string email, string firstName, string lastName, string password, Action<RestResponse> callback)
+
+        [Obsolete("No longer supported by Dropbox")]
+        public void CreateAccountAsync(string email, string firstName, string lastName, string password, Action<RestResponse> success, Action<DropboxException> failure)
         {
             //This has to be here as Dropbox change their base URL between calls
-            _restClient.BaseUrl = _apiBaseUrl;
-            _restClient.Authenticator = new OAuthAuthenticator(_restClient.BaseUrl, _apiKey, _appsecret, _userLogin.Token, _userLogin.Secret);
+            _restClient.BaseUrl = ApiBaseUrl;
 
             var request = _requestHelper.CreateNewAccountRequest(_apiKey, email, firstName, lastName, password);
 
-            _restClient.ExecuteAsync(request, callback);
+            ExecuteAsync(ApiType.Base, request, success, failure);
         }
     }
 }

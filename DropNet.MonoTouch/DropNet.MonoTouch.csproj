@@ -1,152 +1,136 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{32171778-FC7B-4D01-9CF1-F6635DF9984A}</ProjectGuid>
-    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{E9580EFC-6014-4D3B-82A8-5F6D57213CE4}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>DropNet.MonoTouch</RootNamespace>
-    <AssemblyName>DropNet.MonoTouch</AssemblyName>
-    <MtouchSdkVersion>3.2</MtouchSdkVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DropNet</RootNamespace>
+    <AssemblyName>DropNet</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-    <DefineConstants>DEBUG;MONOTOUCH</DefineConstants>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;FRAMEWORK</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchDebug>True</MtouchDebug>
-    <ConsolePause>false</ConsolePause>
-    <MtouchLink>None</MtouchLink>
-    <MtouchUseLlvm>false</MtouchUseLlvm>
-    <MtouchArch>ARMv6</MtouchArch>
-    <MtouchUseThumb>false</MtouchUseThumb>
-    <MtouchUseSGen>false</MtouchUseSGen>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchDebug>False</MtouchDebug>
-    <ConsolePause>false</ConsolePause>
-    <MtouchLink>None</MtouchLink>
-    <DefineConstants>MONOTOUCH</DefineConstants>
-    <MtouchUseLlvm>false</MtouchUseLlvm>
-    <MtouchArch>ARMv6</MtouchArch>
-    <MtouchUseThumb>false</MtouchUseThumb>
-    <MtouchUseSGen>false</MtouchUseSGen>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\iPhone\Debug</OutputPath>
-    <DefineConstants>DEBUG;MONOTOUCH</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <MtouchDebug>True</MtouchDebug>
-    <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchUseLlvm>false</MtouchUseLlvm>
-    <MtouchArch>ARMv6</MtouchArch>
-    <MtouchUseThumb>false</MtouchUseThumb>
-    <MtouchUseSGen>false</MtouchUseSGen>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\iPhone\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <MtouchDebug>False</MtouchDebug>
-    <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer</CodesignKey>
-    <DefineConstants>MONOTOUCH</DefineConstants>
-    <MtouchUseLlvm>false</MtouchUseLlvm>
-    <MtouchArch>ARMv6</MtouchArch>
-    <MtouchUseThumb>false</MtouchUseThumb>
-    <MtouchUseSGen>false</MtouchUseSGen>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="monotouch" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="RestSharp.MonoTouch, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\RestSharp.MonoTouch.dll</HintPath>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="RestSharp.MonoTouch">
+      <HintPath>..\Lib\monotouch\RestSharp.MonoTouch.dll</HintPath>
     </Reference>
-    <Reference Include="NewtonsoftJsonMonoTouch, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\NewtonsoftJsonMonoTouch.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Configuration" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
   <ItemGroup>
+    <None Include="..\DropNet\App.config">
+      <Link>App.config</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\DropNet\Client\User.Async.cs">
-      <Link>User.Async.cs</Link>
-    </Compile>
-    <Compile Include="..\DropNet\Client\Files.Async.cs">
-      <Link>Files.Async.cs</Link>
+    <Compile Include="..\DropNet\Authenticators\OAuthAuthenticator.cs">
+      <Link>Authenticators\OAuthAuthenticator.cs</Link>
     </Compile>
     <Compile Include="..\DropNet\Client\Client.cs">
-      <Link>Client.cs</Link>
+      <Link>Client\Client.cs</Link>
     </Compile>
-    <Compile Include="..\DropNet\Exceptions\DropboxException.cs">
-      <Link>DropboxException.cs</Link>
-    </Compile>
-    <Compile Include="..\DropNet\Models\UserLogin.cs">
-      <Link>UserLogin.cs</Link>
-    </Compile>
-    <Compile Include="..\DropNet\Models\MetaData.cs">
-      <Link>MetaData.cs</Link>
-    </Compile>
-    <Compile Include="..\DropNet\Models\AccountInfo.cs">
-      <Link>AccountInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\DropNet\Helpers\RequestHelper.cs">
-      <Link>RequestHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\DropNet\Authenticators\OAuthAuthenticator.cs">
-      <Link>OAuthAuthenticator.cs</Link>
-    </Compile>
-    <Compile Include="Resource.Designer.cs" />
-    <Compile Include="..\DropNet\Client\User.Sync.cs">
-      <Link>User.Sync.cs</Link>
+    <Compile Include="..\DropNet\Client\Files.Async.cs">
+      <Link>Client\Files.Async.cs</Link>
     </Compile>
     <Compile Include="..\DropNet\Client\Files.Sync.cs">
-      <Link>Files.Sync.cs</Link>
+      <Link>Client\Files.Sync.cs</Link>
     </Compile>
-    <Compile Include="..\DropNet\Client\RestHttp.Async.cs">
-      <Link>RestHttp.Async.cs</Link>
+    <Compile Include="..\DropNet\Client\Files.Task.cs">
+      <Link>Client\Files.Task.cs</Link>
     </Compile>
-    <Compile Include="..\DropNet\Client\RestHttp.cs">
-      <Link>RestHttp.cs</Link>
+    <Compile Include="..\DropNet\Client\User.Async.cs">
+      <Link>Client\User.Async.cs</Link>
     </Compile>
-    <Compile Include="..\DropNet\Client\RestHttp.Sync.cs">
-      <Link>RestHttp.Sync.cs</Link>
+    <Compile Include="..\DropNet\Client\User.Sync.cs">
+      <Link>Client\User.Sync.cs</Link>
     </Compile>
-    <Compile Include="..\DropNet\Models\DropNetResult.cs">
-      <Link>DropNetResult.cs</Link>
+    <Compile Include="..\DropNet\Exceptions\DropboxException.cs">
+      <Link>Exceptions\DropboxException.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Extensions\RestClientExtensions.cs">
+      <Link>Extensions\RestClientExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Extensions\StringExtensions.cs">
+      <Link>Extensions\StringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Helpers\RequestHelper.cs">
+      <Link>Helpers\RequestHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\AccountCreationResult.cs">
+      <Link>Models\AccountCreationResult.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\AccountInfo.cs">
+      <Link>Models\AccountInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\DeltaPage.cs">
+      <Link>Models\DeltaPage.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\MetaData.cs">
+      <Link>Models\MetaData.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\SharesResponse.cs">
+      <Link>Models\SharesResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\ThumbnailSize.cs">
+      <Link>Models\ThumbnailSize.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\UserLogin.cs">
+      <Link>Models\UserLogin.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resource.resx" />
-  </ItemGroup>
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="IPhone" />
-    </MonoDevelop>
-  </ProjectExtensions>
 </Project>

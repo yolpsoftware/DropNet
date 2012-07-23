@@ -13,7 +13,7 @@
     <AssemblyName>DropNet.WindowsPhone</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
-    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
@@ -42,11 +42,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="Newtonsoft.Json.WindowsPhone, Version=4.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\Lib\Newtonsoft.Json.WindowsPhone.dll</HintPath>
-    </Reference>
     <Reference Include="RestSharp.WindowsPhone">
-      <HintPath>..\Lib\RestSharp.WindowsPhone.dll</HintPath>
+      <HintPath>..\Lib\sl4-wp71\RestSharp.WindowsPhone.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.WP71">
+      <HintPath>..\Lib\sl4-wp71\System.Threading.Tasks.WP71.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -65,28 +65,48 @@
     <Compile Include="..\dropnet\Client\Files.Async.cs">
       <Link>Client\Files.Async.cs</Link>
     </Compile>
+    <Compile Include="..\DropNet\Client\Files.Task.cs">
+      <Link>Client\Files.Task.cs</Link>
+    </Compile>
     <Compile Include="..\dropnet\Client\User.Async.cs">
       <Link>Client\User.Async.cs</Link>
     </Compile>
     <Compile Include="..\dropnet\Exceptions\DropboxException.cs">
       <Link>Exceptions\DropboxException.cs</Link>
     </Compile>
+    <Compile Include="..\DropNet\Extensions\RestClientExtensions.cs">
+      <Link>Extensions\RestClientExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\dropnet\Models\AccountInfo.cs">
       <Link>Models\AccountInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\DeltaPage.cs">
+      <Link>Models\DeltaPage.cs</Link>
     </Compile>
     <Compile Include="..\dropnet\Models\MetaData.cs">
       <Link>Models\MetaData.cs</Link>
     </Compile>
-    <Compile Include="..\dropnet\Models\DropNetResult.cs">
-      <Link>Models\DropNetResult.cs</Link>
+    <Compile Include="..\DropNet\Models\ThumbnailSize.cs">
+      <Link>Models\ThumbnailSize.cs</Link>
     </Compile>
     <Compile Include="..\dropnet\Models\UserLogin.cs">
       <Link>Models\UserLogin.cs</Link>
+    </Compile>
+    <Compile Include="..\dropnet\Models\SharesResponse.cs">
+      <Link>Models\SharesResponse.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\dropnet\Helpers\RequestHelper.cs">
       <Link>Helpers\RequestHelper.cs</Link>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\dropnet\Extensions\StringExtensions.cs">
+      <Link>Extensions\StringExtensions.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

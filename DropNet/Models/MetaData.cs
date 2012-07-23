@@ -1,33 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace DropNet.Models
 {
-    [DataContract]
     public class MetaData
     {
-        [DataMember]
         public string Hash { get; set; }
         public bool Thumb_Exists { get; set; }
-        [DataMember]
         public long Bytes { get; set; }
-        [DataMember]
         public string Modified { get; set; }
-        [DataMember]
         public string Path { get; set; }
         public bool Is_Dir { get; set; }
         public bool Is_Deleted { get; set; }
-        [DataMember]
         public string Size { get; set; }
         public string Root { get; set; }
         public string Icon { get; set; }
-        [DataMember]
         public int Revision { get; set; }
-        [DataMember]
+		public string Rev { get; set; }
         public List<MetaData> Contents { get; set; }
 
-        public System.DateTime ModifiedDate
+        public DateTime ModifiedDate
         {
             get
             {
@@ -57,15 +49,17 @@ namespace DropNet.Models
         {
             get
             {
-                if (string.IsNullOrEmpty(Path)) return string.Empty;
+                if (string.IsNullOrEmpty(Path))
+                {
+                    return string.Empty;
+                }
+                
                 if (Path.LastIndexOf("/") == -1)
                 {
                     return string.Empty;
                 }
-                else
-                {
-                    return string.IsNullOrEmpty(Path) ? "root" : Path.Substring(Path.LastIndexOf("/") + 1);
-                }
+
+                return string.IsNullOrEmpty(Path) ? "root" : Path.Substring(Path.LastIndexOf("/") + 1);
             }
         }
 		
@@ -73,15 +67,17 @@ namespace DropNet.Models
         {
             get
             {
-                if (string.IsNullOrEmpty(Path)) return string.Empty;
+                if (string.IsNullOrEmpty(Path))
+                {
+                    return string.Empty;
+                }
+                
                 if (Path.LastIndexOf(".") == -1)
                 {
                     return string.Empty;
                 }
-                else
-                {
-                    return Is_Dir ? string.Empty : Path.Substring(Path.LastIndexOf("."));
-                }
+
+                return Is_Dir ? string.Empty : Path.Substring(Path.LastIndexOf("."));
             }
         }
     }

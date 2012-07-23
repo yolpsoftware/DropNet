@@ -112,7 +112,7 @@ namespace DropNet.Tests
         {
             string fromPath = fixture.CreateAnonymous<string>();
             string toPath = fixture.CreateAnonymous<string>();
-            RestRequest actual = _target.CreateCopyFileRequest(fromPath, toPath);
+            RestRequest actual = _target.CreateCopyFileRequest(fromPath, toPath, "dropbox");
 
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.Method == Method.GET);
@@ -136,7 +136,7 @@ namespace DropNet.Tests
         public void CreateDeleteFileRequestTest()
         {
             string path = fixture.CreateAnonymous<string>();
-            RestRequest actual = _target.CreateDeleteFileRequest(path);
+            RestRequest actual = _target.CreateDeleteFileRequest(path, "dropbox");
 
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.Method == Method.GET);
@@ -155,13 +155,13 @@ namespace DropNet.Tests
         public void CreateGetFileRequestTest()
         {
             string path = fixture.CreateAnonymous<string>();
-            RestRequest actual = _target.CreateGetFileRequest(path);
+            RestRequest actual = _target.CreateGetFileRequest(path, "dropbox");
 
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.Method == Method.GET);
             Assert.IsNotNull(actual.Resource);
             Assert.IsNotNull(actual.Parameters);
-            Assert.IsTrue(actual.Parameters.Count == 2);
+            Assert.IsTrue(actual.Parameters.Count == 3);
             Assert.IsTrue(String.Equals(actual.Parameters.Find(x => x.Name == "version").Value, _version));
             Assert.IsTrue(actual.Parameters.Find(x => x.Name == "version").Type == ParameterType.UrlSegment);
             Assert.IsTrue(String.Equals(actual.Parameters.Find(x => x.Name == "path").Value, path));
@@ -198,7 +198,7 @@ namespace DropNet.Tests
         public void CreateMetadataRequestTest()
         {
             string path = fixture.CreateAnonymous<string>();
-            RestRequest actual = _target.CreateMetadataRequest(path);
+            RestRequest actual = _target.CreateMetadataRequest(path, "dropbox");
 
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.Method == Method.GET);
@@ -219,7 +219,7 @@ namespace DropNet.Tests
         {
             string fromPath = fixture.CreateAnonymous<string>();
             string toPath = fixture.CreateAnonymous<string>();
-            RestRequest actual = _target.CreateMoveFileRequest(fromPath, toPath);
+            RestRequest actual = _target.CreateMoveFileRequest(fromPath, toPath, "dropbox");
 
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.Method == Method.GET);
@@ -246,20 +246,19 @@ namespace DropNet.Tests
             string filename = fixture.CreateAnonymous<string>();
             byte[] fileData = System.Text.Encoding.UTF8.GetBytes(fixture.CreateAnonymous<string>());
             
-            RestRequest actual = _target.CreateUploadFileRequest(path, filename, fileData);
+            RestRequest actual = _target.CreateUploadFileRequest(path, filename, fileData, "dropbox");
 
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.Method == Method.POST);
             Assert.IsNotNull(actual.Resource);
             Assert.IsNotNull(actual.Parameters);
-            Assert.IsTrue(actual.Parameters.Count == 3);
+            Assert.IsTrue(actual.Parameters.Count == 4);
             Assert.IsTrue(String.Equals(actual.Parameters.Find(x => x.Name == "version").Value, _version));
             Assert.IsTrue(actual.Parameters.Find(x => x.Name == "version").Type == ParameterType.UrlSegment);
             Assert.IsTrue(String.Equals(actual.Parameters.Find(x => x.Name == "path").Value, path));
             Assert.IsTrue(actual.Parameters.Find(x => x.Name == "path").Type == ParameterType.UrlSegment);
             Assert.IsTrue(String.Equals(actual.Parameters.Find(x => x.Name == "file").Value, filename));
             Assert.IsTrue(actual.Files.Count == 1);
-            //Assert.IsTrue(actual.Files.Find(x => x.FileName == filename).Data.ToString() == fileData.ToString());
         }
     }
 }
