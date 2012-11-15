@@ -11,28 +11,28 @@ namespace DropNet
 {
     public partial class DropNetClient
     {
-        public Task<MetaData> GetMetaDataTask(string path)
-        {
-            if (!string.IsNullOrEmpty(path) && !path.StartsWith("/"))
-            {
-                path = "/" + path;
-            }
-
-            var request = _requestHelper.CreateMetadataRequest(path, Root);
-
-            return ExecuteTask<MetaData>(ApiType.Base, request);
-        }
-
-        public Task<MetaData> GetMetaDataTask(string path, string hash)
-        {
-            if (path != "" && !path.StartsWith("/")) path = "/" + path;
-
-            var request = _requestHelper.CreateMetadataRequest(path, Root);
-
-            request.AddParameter("hash", hash);
-
-            return ExecuteTask<MetaData>(ApiType.Base, request);
-        }
+		public Task<MetaData> GetMetaDataTask(string path, bool needDirContents)
+		{
+			if (!string.IsNullOrEmpty(path) && !path.StartsWith("/"))
+			{
+				path = "/" + path;
+			}
+			
+			var request = _requestHelper.CreateMetadataRequest(path, Root, needDirContents);
+			
+			return ExecuteTask<MetaData>(ApiType.Base, request);
+		}
+		
+		public Task<MetaData> GetMetaDataTask(string path, string hash, bool needDirContents)
+		{
+			if (path != "" && !path.StartsWith("/")) path = "/" + path;
+			
+			var request = _requestHelper.CreateMetadataRequest(path, Root, needDirContents);
+			
+			request.AddParameter("hash", hash);
+			
+			return ExecuteTask<MetaData>(ApiType.Base, request);
+		}
 
         public Task<List<MetaData>> SearchTask(string searchString)
         {
