@@ -272,27 +272,27 @@ namespace DropNet
 
 #if !WINRT
 
-        private Task<T> ExecuteTask<T>(ApiType apiType, IRestRequest request) where T : new()
+        private Task<T> ExecuteTask<T>(ApiType apiType, IRestRequest request, CancellationToken token = default(CancellationToken)) where T : new()
         {
             if (apiType == ApiType.Base)
             {
-                return _restClient.ExecuteTask<T>(request);
+                return _restClient.ExecuteTask<T>(request, token);
             }
             else
             {
-                return _restClientContent.ExecuteTask<T>(request);
+                return _restClientContent.ExecuteTask<T>(request, token);
             }
         }
 
-        private Task<IRestResponse> ExecuteTask(ApiType apiType, IRestRequest request)
+		private Task<IRestResponse> ExecuteTask(ApiType apiType, IRestRequest request, CancellationToken token = default(CancellationToken))
         {
             if (apiType == ApiType.Base)
             {
-                return _restClient.ExecuteTask(request);
+                return _restClient.ExecuteTask(request, token);
             }
             else
             {
-                return _restClientContent.ExecuteTask(request);
+                return _restClientContent.ExecuteTask(request, token);
             }
         }
 

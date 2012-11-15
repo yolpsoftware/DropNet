@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using DropNet.Models;
+using System.Threading;
+using System.Threading.Tasks;
+
 using RestSharp;
-using System;
+using DropNet.Models;
 using DropNet.Authenticators;
 using DropNet.Exceptions;
-using System.Threading.Tasks;
 
 namespace DropNet
 {
@@ -46,13 +48,13 @@ namespace DropNet
             return ExecuteTask<List<MetaData>>(ApiType.Base, request);
         }
 
-        public Task<IRestResponse> GetFileTask(string path)
+		public Task<IRestResponse> GetFileTask(string path, CancellationToken token = default(CancellationToken))
         {
             if (!path.StartsWith("/")) path = "/" + path;
 
             var request = _requestHelper.CreateGetFileRequest(path, Root);
 
-            return ExecuteTask(ApiType.Content, request);
+            return ExecuteTask(ApiType.Content, request, token);
         }
 
         public Task<MetaData> UploadFileTask(string path, string filename, byte[] fileData)
@@ -144,13 +146,13 @@ namespace DropNet
             return GetThumbnailTask(path, ThumbnailSize.Small);
         }
 
-        public Task<IRestResponse> GetThumbnailTask(string path, ThumbnailSize size)
+        public Task<IRestResponse> GetThumbnailTask(string path, ThumbnailSize size, CancellationToken token = default(CancellationToken))
         {
             if (!path.StartsWith("/")) path = "/" + path;
 
             var request = _requestHelper.CreateThumbnailRequest(path, size, Root);
 
-            return ExecuteTask(ApiType.Content, request);
+            return ExecuteTask(ApiType.Content, request, token);
         }
 
     }
