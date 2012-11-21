@@ -130,7 +130,7 @@ namespace DropNet
                 (string.IsNullOrEmpty(callback) ? string.Empty : "&oauth_callback=" + callback));
         }
 
-#if !WINDOWS_PHONE && !WINRT
+#if !WINDOWS_PHONE && !WINRT && !SILVERLIGHT
         private T Execute<T>(ApiType apiType, IRestRequest request) where T : new()
         {
             IRestResponse<T> response;
