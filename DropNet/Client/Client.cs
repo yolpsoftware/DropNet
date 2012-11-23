@@ -10,6 +10,10 @@ using DropNet.Models;
 using RestSharp;
 using RestSharp.Deserializers;
 
+#if MONOTOUCH
+using System.Security.Cryptography;
+#endif
+
 namespace DropNet
 {
     public partial class DropNetClient
@@ -129,6 +133,71 @@ namespace DropNet
             return string.Format("https://www.dropbox.com/1/oauth/authorize?oauth_token={0}{1}", userLogin.Token,
                 (string.IsNullOrEmpty(callback) ? string.Empty : "&oauth_callback=" + callback));
         }
+
+		
+#if MONOTOUCH
+		
+		/// <summary>
+		/// Gets the token from URL.
+		/// This is used in the OpenUrl of AppDelegate to retrive the token
+		/// </summary>
+		/// <param name='url'></param>
+		/// <returns>
+		/// The token from the URL.
+		/// </returns>
+		public UserLogin GetTokenFromUrl(string url)
+		{
+			Uri u = new Uri(url);
+			
+			return GetUserLoginFromParams(u.Query.Replace("?", ""));
+			
+		}
+
+		
+		/// <summary>
+		/// Fallback method to use the web browser.
+		/// </summary>
+		/// <param name="userLogin"></param>
+		/// <param name="callback"></param>
+		/// <returns></returns>
+		public string BuildWebAuthorizeUrlIOS()
+		{
+			
+			
+			//Go 1-Liner!
+			return string.Format(
+				"https://www.dropbox.com/1/connect?k={0}&s={1}&dca=1&easl=1", _apiKey, GetSValue(_appsecret));
+		}
+		
+		/// <summary>
+		/// Builds the app authorize URL for iOS. Tries to load the DropBox App if it's available.
+		/// </summary>
+		/// <returns>
+		/// the URL to call. Check it with UIApplication.SharedApplication.CanOpenUrl(new NSUrl(url))
+		/// </returns>
+		public string BuildAppAuthorizeUrlIOS()
+		{
+			
+			
+			//Go 1-Liner!
+			return string.Format(
+				"dbapi-1://1/connect?k={0}&s={1}&dca=1&easl=1", _apiKey, GetSValue(_appsecret));
+		}
+		
+		private string GetSValue(string tokenSecret)
+		{
+			using (var cp = new SHA1CryptoServiceProvider())
+			{
+				byte[] buffer = System.Text.Encoding.ASCII.GetBytes(tokenSecret);
+				string hash = BitConverter.ToString(cp.ComputeHash(buffer));
+				hash = hash.Replace("-", "");
+				return hash.Substring(hash.Length -8);
+				
+			}
+		}
+		
+		
+#endif
 
 #if !WINDOWS_PHONE && !WINRT && !SILVERLIGHT
         private T Execute<T>(ApiType apiType, IRestRequest request) where T : new()
