@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using DropNet.Authenticators;
 using DropNet.Exceptions;
 using DropNet.Extensions;
@@ -7,7 +9,10 @@ using DropNet.Helpers;
 using DropNet.Models;
 using RestSharp;
 using RestSharp.Deserializers;
-using System.Threading.Tasks;
+
+#if MONOTOUCH
+using System.Security.Cryptography;
+#endif
 
 namespace DropNet
 {
@@ -40,12 +45,12 @@ namespace DropNet
         private const string SandboxRoot = "sandbox";
         private const string DropboxRoot = "dropbox";
 
-        private readonly string _apiKey;
-        private readonly string _appsecret;
+        protected readonly string _apiKey;
+        protected readonly string _appsecret;
 
         private RestClient _restClient;
         private RestClient _restClientContent;
-        private RequestHelper _requestHelper;
+        protected RequestHelper _requestHelper;
 
         /// <summary>
         /// Gets the directory root for the requests (full or sandbox mode)
@@ -129,7 +134,72 @@ namespace DropNet
                 (string.IsNullOrEmpty(callback) ? string.Empty : "&oauth_callback=" + callback));
         }
 
-#if !WINDOWS_PHONE && !WINRT
+		
+#if MONOTOUCH
+		
+		/// <summary>
+		/// Gets the token from URL.
+		/// This is used in the OpenUrl of AppDelegate to retrive the token
+		/// </summary>
+		/// <param name='url'></param>
+		/// <returns>
+		/// The token from the URL.
+		/// </returns>
+		public UserLogin GetTokenFromUrl(string url)
+		{
+			Uri u = new Uri(url);
+			
+			return GetUserLoginFromParams(u.Query.Replace("?", ""));
+			
+		}
+
+		
+		/// <summary>
+		/// Fallback method to use the web browser.
+		/// </summary>
+		/// <param name="userLogin"></param>
+		/// <param name="callback"></param>
+		/// <returns></returns>
+		public string BuildWebAuthorizeUrlIOS()
+		{
+			
+			
+			//Go 1-Liner!
+			return string.Format(
+				"https://www.dropbox.com/1/connect?k={0}&s={1}&dca=1&easl=1", _apiKey, GetSValue(_appsecret));
+		}
+		
+		/// <summary>
+		/// Builds the app authorize URL for iOS. Tries to load the DropBox App if it's available.
+		/// </summary>
+		/// <returns>
+		/// the URL to call. Check it with UIApplication.SharedApplication.CanOpenUrl(new NSUrl(url))
+		/// </returns>
+		public string BuildAppAuthorizeUrlIOS()
+		{
+			
+			
+			//Go 1-Liner!
+			return string.Format(
+				"dbapi-1://1/connect?k={0}&s={1}&dca=1&easl=1", _apiKey, GetSValue(_appsecret));
+		}
+		
+		private string GetSValue(string tokenSecret)
+		{
+			using (var cp = new SHA1CryptoServiceProvider())
+			{
+				byte[] buffer = System.Text.Encoding.ASCII.GetBytes(tokenSecret);
+				string hash = BitConverter.ToString(cp.ComputeHash(buffer));
+				hash = hash.Replace("-", "");
+				return hash.Substring(hash.Length -8);
+				
+			}
+		}
+		
+		
+#endif
+
+#if !WINDOWS_PHONE && !WINRT && !SILVERLIGHT
         private T Execute<T>(ApiType apiType, IRestRequest request) where T : new()
         {
             IRestResponse<T> response;
@@ -181,7 +251,7 @@ namespace DropNet
         }
 #endif
 
-        private void ExecuteAsync(ApiType apiType, IRestRequest request, Action<IRestResponse> success, Action<DropboxException> failure)
+        protected void ExecuteAsync(ApiType apiType, IRestRequest request, Action<IRestResponse> success, Action<DropboxException> failure)
         {
 #if WINDOWS_PHONE
             //check for network connection
@@ -225,7 +295,7 @@ namespace DropNet
             }
         }
 
-        private void ExecuteAsync<T>(ApiType apiType, IRestRequest request, Action<T> success, Action<DropboxException> failure) where T : new()
+        protected void ExecuteAsync<T>(ApiType apiType, IRestRequest request, Action<T> success, Action<DropboxException> failure) where T : new()
         {
 #if WINDOWS_PHONE
             //check for network connection
@@ -271,48 +341,52 @@ namespace DropNet
 
 #if !WINRT
 
-        private Task<T> ExecuteTask<T>(ApiType apiType, IRestRequest request) where T : new()
+        private Task<T> ExecuteTask<T>(ApiType apiType, IRestRequest request, CancellationToken token = default(CancellationToken)) where T : new()
         {
             if (apiType == ApiType.Base)
             {
-                return _restClient.ExecuteTask<T>(request);
+                return _restClient.ExecuteTask<T>(request, token);
             }
             else
             {
-                return _restClientContent.ExecuteTask<T>(request);
+                return _restClientContent.ExecuteTask<T>(request, token);
             }
         }
 
-        private Task<IRestResponse> ExecuteTask(ApiType apiType, IRestRequest request)
+		private Task<IRestResponse> ExecuteTask(ApiType apiType, IRestRequest request, CancellationToken token = default(CancellationToken))
         {
             if (apiType == ApiType.Base)
             {
-                return _restClient.ExecuteTask(request);
+                return _restClient.ExecuteTask(request, token);
             }
             else
             {
-                return _restClientContent.ExecuteTask(request);
+                return _restClientContent.ExecuteTask(request, token);
             }
         }
 
 #endif
 
-        private UserLogin GetUserLoginFromParams(string urlParams)
+        protected UserLogin GetUserLoginFromParams(string parms)
         {
             var userLogin = new UserLogin();
 
             //TODO - Make this not suck
-            var parameters = urlParams.Split('&');
+            var parameters = parms.Split('&');
 
             foreach (var parameter in parameters)
             {
-                if (parameter.Split('=')[0] == "oauth_token_secret")
-                {
-                    userLogin.Secret = parameter.Split('=')[1];
-                }
-                else if (parameter.Split('=')[0] == "oauth_token")
-                {
-                    userLogin.Token = parameter.Split('=')[1];
+                var keyVal = parameter.Split ('=');
+                switch (keyVal[0]) {
+                case "uid":
+                    userLogin.Uid = keyVal[1];
+                    break;
+                case "oauth_token_secret":
+                    userLogin.Secret = keyVal[1];
+                    break;
+                case "oauth_token":
+                    userLogin.Token = keyVal[1];
+                    break;
                 }
             }
 
@@ -329,7 +403,7 @@ namespace DropNet
             }
         }
 
-        enum ApiType
+        protected enum ApiType
         {
             Base,
             Content

@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{243DF75A-B2D3-44A2-883D-97F75C00D833}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DropNet.Silverlight</RootNamespace>
+    <AssemblyName>DropNet.Silverlight</AssemblyName>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <!-- This property group is only here to support building this project using the 
+       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
+       to set the TargetFrameworkVersion to v3.5 -->
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core">
+      <HintPath>$(TargetFrameworkDirectory)System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\dropnet\Client\Client.cs">
+      <Link>Client\Client.cs</Link>
+    </Compile>
+    <Compile Include="..\dropnet\Authenticators\OAuthAuthenticator.cs">
+      <Link>Authenticators\OAuthAuthenticator.cs</Link>
+    </Compile>
+    <Compile Include="..\dropnet\Client\Files.Async.cs">
+      <Link>Client\Files.Async.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Client\Files.Task.cs">
+      <Link>Client\Files.Task.cs</Link>
+    </Compile>
+    <Compile Include="..\dropnet\Client\User.Async.cs">
+      <Link>Client\User.Async.cs</Link>
+    </Compile>
+    <Compile Include="..\dropnet\Exceptions\DropboxException.cs">
+      <Link>Exceptions\DropboxException.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Extensions\RestClientExtensions.cs">
+      <Link>Extensions\RestClientExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\dropnet\Models\AccountInfo.cs">
+      <Link>Models\AccountInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\DeltaPage.cs">
+      <Link>Models\DeltaPage.cs</Link>
+    </Compile>
+    <Compile Include="..\dropnet\Models\MetaData.cs">
+      <Link>Models\MetaData.cs</Link>
+    </Compile>
+    <Compile Include="..\DropNet\Models\ThumbnailSize.cs">
+      <Link>Models\ThumbnailSize.cs</Link>
+    </Compile>
+    <Compile Include="..\dropnet\Models\UserLogin.cs">
+      <Link>Models\UserLogin.cs</Link>
+    </Compile>
+    <Compile Include="..\dropnet\Models\SharesResponse.cs">
+      <Link>Models\SharesResponse.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\dropnet\Helpers\RequestHelper.cs">
+      <Link>Helpers\RequestHelper.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\dropnet\Extensions\StringExtensions.cs">
+      <Link>Extensions\StringExtensions.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\RestSharp\RestSharp.Silverlight\RestSharp.Silverlight.csproj">
+      <Project>{11f84600-0978-48b9-a28f-63b3781e54b3}</Project>
+      <Name>RestSharp.Silverlight</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

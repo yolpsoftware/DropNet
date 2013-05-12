@@ -10,43 +10,44 @@ namespace DropNet
 {
     public partial class DropNetClient
     {
-        /// <summary>
-        /// Gets MetaData for a File or Folder. For a folder this includes its contents. For a file, this includes details such as file size.
-        /// </summary>
-        /// <param name="path">The path of the file or folder</param>
-        /// <param name="success">Success call back</param>
-        /// <param name="failure">Failure call back </param>
-        public void GetMetaDataAsync(string path, Action<MetaData> success, Action<DropboxException> failure)
-        {
-            if (!string.IsNullOrEmpty(path) && !path.StartsWith("/"))
-            {
-                path = "/" + path;
-            }
+		/// <summary>
+		/// Gets MetaData for a File or Folder. For a folder this includes its contents. For a file, this includes details such as file size.
+		/// </summary>
+		/// <param name="path">The path of the file or folder</param>
+		/// <param name="success">Success call back</param>
+		/// <param name="failure">Failure call back </param>
+		public void GetMetaDataAsync(string path, bool needDirContents, Action<MetaData> success, Action<DropboxException> failure)
+		{
+			if (!string.IsNullOrEmpty(path) && !path.StartsWith("/"))
+			{
+				path = "/" + path;
+			}
+			
+			var request = _requestHelper.CreateMetadataRequest(path, Root, needDirContents);
+			
+			ExecuteAsync(ApiType.Base, request, success, failure);
+		}
+		
+		/// <summary>
+		/// Gets MetaData for a File or Folder. For a folder this includes its contents. For a file, this includes details such as file size.
+		/// Optional 'hash' param returns HTTP code 304	(Directory contents have not changed) if contents have not changed since the
+		/// hash was retrieved on a previous call.
+		/// </summary>
+		/// <param name="path">The path of the file or folder</param>
+		/// <param name="hash">hash - Optional. Listing return values include a hash representing the state of the directory's contents. If you provide this argument to the metadata call, you give the service an opportunity to respond with a "304 Not Modified" status code instead of a full (potentially very large) directory listing. This argument is ignored if the specified path is associated with a file or if list=false.</param>
+		/// <param name="success">Success callback </param>
+		/// <param name="failure">Failure callback </param>
+		public void GetMetaDataAsync(string path, string hash, bool needDirContents, Action<MetaData> success, Action<DropboxException> failure)
+		{
+			if (path != "" && !path.StartsWith("/")) path = "/" + path;
+			
+			var request = _requestHelper.CreateMetadataRequest(path, Root, needDirContents);
+			
+			request.AddParameter("hash", hash);
+			
+			ExecuteAsync(ApiType.Base, request, success, failure);
+		}
 
-            var request = _requestHelper.CreateMetadataRequest(path, Root);
-
-            ExecuteAsync(ApiType.Base, request, success, failure);
-        }
-
-        /// <summary>
-        /// Gets MetaData for a File or Folder. For a folder this includes its contents. For a file, this includes details such as file size.
-        /// Optional 'hash' param returns HTTP code 304	(Directory contents have not changed) if contents have not changed since the
-        /// hash was retrieved on a previous call.
-        /// </summary>
-        /// <param name="path">The path of the file or folder</param>
-        /// <param name="hash">hash - Optional. Listing return values include a hash representing the state of the directory's contents. If you provide this argument to the metadata call, you give the service an opportunity to respond with a "304 Not Modified" status code instead of a full (potentially very large) directory listing. This argument is ignored if the specified path is associated with a file or if list=false.</param>
-        /// <param name="success">Success callback </param>
-        /// <param name="failure">Failure callback </param>
-        public void GetMetaDataAsync(string path, string hash, Action<MetaData> success, Action<DropboxException> failure)
-        {
-            if (path != "" && !path.StartsWith("/")) path = "/" + path;
-
-            var request = _requestHelper.CreateMetadataRequest(path, Root);
-
-            request.AddParameter("hash", hash);
-
-            ExecuteAsync(ApiType.Base, request, success, failure);
-        }
 
         /// <summary>
         /// Gets list of metadata for search string

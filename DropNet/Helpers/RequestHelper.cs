@@ -17,16 +17,18 @@ namespace DropNet.Helpers
             _version = version;
         }
 
-        public RestRequest CreateMetadataRequest(string path, string root)
-        {
-            var request = new RestRequest(Method.GET);
-            request.Resource = "{version}/metadata/{root}{path}";
-            request.AddParameter("version", _version, ParameterType.UrlSegment);
-            request.AddParameter("path", path, ParameterType.UrlSegment);
-            request.AddParameter("root", root, ParameterType.UrlSegment);
-
-            return request;
-        }
+		public RestRequest CreateMetadataRequest(string path, string root, bool needDirContents)
+		{
+			var request = new RestRequest(Method.GET);
+			request.Resource = "{version}/metadata/{root}{path}";
+			request.AddParameter("version", _version, ParameterType.UrlSegment);
+			request.AddParameter("path", path, ParameterType.UrlSegment);
+			request.AddParameter("root", root, ParameterType.UrlSegment);
+			if (needDirContents) {
+				request.AddParameter ("list", "true", ParameterType.GetOrPost);
+			}
+			return request;
+		}
 
         public RestRequest CreateShareRequest(string path, string root)
         {

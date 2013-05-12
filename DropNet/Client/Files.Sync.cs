@@ -14,14 +14,13 @@ namespace DropNet
 {
     public partial class DropNetClient
     {
-
         /// <summary>
         /// Gets MetaData for the root folder.
         /// </summary>
         /// <returns></returns>
-        public MetaData GetMetaData()
+        public MetaData GetMetaData(bool needDirContents)
         {
-            return GetMetaData(string.Empty);
+            return GetMetaData(string.Empty, needDirContents);
         }
 
         /// <summary>
@@ -29,9 +28,18 @@ namespace DropNet
         /// </summary>
         /// <param name="path">The path of the file or folder</param>
         /// <returns></returns>
-        public MetaData GetMetaData(string path)
+        public MetaData GetMetaData(string path, bool needDirContents)
         {
-            var request = _requestHelper.CreateMetadataRequest(path, Root);
+            var request = _requestHelper.CreateMetadataRequest(path, Root, needDirContents);
+
+            return Execute<MetaData>(ApiType.Base, request);
+        }
+
+        public MetaData GetMetaData(string path, string hash, bool needDirContents)
+        {
+            var request = _requestHelper.CreateMetadataRequest(path, Root, needDirContents);
+
+            request.AddParameter ("hash", hash);
 
             return Execute<MetaData>(ApiType.Base, request);
         }

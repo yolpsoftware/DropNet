@@ -1,114 +1,71 @@
-﻿/* Code below modified from a version taken from Laurent Kempé's blog
- * http://www.laurentkempe.com/post/Extending-existing-NET-API-to-support-asynchronous-operations.aspx
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
-using System.Threading;
-using System.Net;
 using DropNet.Exceptions;
 
 namespace DropNet.Extensions
 {
-    public static class RestClientExtensions
-    {
-        public static Task<TResult> ExecuteTask<TResult>(this IRestClient client,
-                                                         IRestRequest request) where TResult : new()
-        {
-            var tcs = new TaskCompletionSource<TResult>();
-
-            WaitCallback
-                asyncWork = _ =>
-                {
-                    try
-                    {
-#if WINDOWS_PHONE
-                                    //check for network connection
-                                    if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-                                    {
-                                        tcs.SetException(new DropboxException
-                                        {
-                                            StatusCode = System.Net.HttpStatusCode.BadGateway
-                                        });
-                                        return;
-                                    }
-#endif
-                        client.ExecuteAsync<TResult>(request,
-                                                     (response, asynchandle) =>
-                                                     {
-                                                         if (response.StatusCode != HttpStatusCode.OK)
-                                                         {
-                                                             tcs.SetException(new DropboxException(response));
-                                                         }
-                                                         else
-                                                         {
-                                                             tcs.SetResult(response.Data);
-                                                         }
-                                                     });
-                    }
-                    catch (Exception exc)
-                    {
-                        tcs.SetException(exc);
-                    }
-                };
-
-            return ExecuteTask(asyncWork, tcs);
-        }
-
-
-        public static Task<IRestResponse> ExecuteTask(this IRestClient client,
-                                                         IRestRequest request)
-        {
-            var tcs = new TaskCompletionSource<IRestResponse>();
-
-            WaitCallback
-                asyncWork = _ =>
-                {
-                    try
-                    {
-#if WINDOWS_PHONE
-                                    //check for network connection
-                                    if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-                                    {
-                                        tcs.SetException(new DropboxException
-                                        {
-                                            StatusCode = System.Net.HttpStatusCode.BadGateway
-                                        });
-                                        return;
-                                    }
-#endif
-                        client.ExecuteAsync(request,
-                                                     (response, asynchandle) =>
-                                                     {
-                                                         if (response.StatusCode != HttpStatusCode.OK)
-                                                         {
-                                                             tcs.SetException(new DropboxException(response));
-                                                         }
-                                                         else
-                                                         {
-                                                             tcs.SetResult(response);
-                                                         }
-                                                     });
-                    }
-                    catch (Exception exc)
-                    {
-                        tcs.SetException(exc);
-                    }
-                };
-
-            return ExecuteTask(asyncWork, tcs);
-        }
-
-        private static Task<TResult> ExecuteTask<TResult>(WaitCallback asyncWork,
-                                                          TaskCompletionSource<TResult> tcs)
-        {
-            ThreadPool.QueueUserWorkItem(asyncWork);
-
-            return tcs.Task;
-        }
-    }
+	public static class RestClientExtensions
+	{
+		public static Task<TResult> ExecuteTask<TResult>(
+			this IRestClient client, IRestRequest request, CancellationToken token = default(CancellationToken)
+			) where TResult : new()
+		{
+			var tcs = new TaskCompletionSource<TResult>();
+			try {
+				var async = client.ExecuteAsync<TResult>(request, (response, _) => {
+					if (token.IsCancellationRequested || response == null)
+						return;
+					
+					if (response.StatusCode != HttpStatusCode.OK) {
+						tcs.TrySetException(new DropboxException(response));
+					} else {
+						tcs.TrySetResult(response.Data);
+					}
+				});
+				
+				token.Register(() => {
+					// Crashes on the device: see https://bugzilla.xamarin.com/show_bug.cgi?id=8407
+					// async.Abort();
+					tcs.TrySetCanceled();
+				});
+			} catch (Exception ex) {
+				tcs.TrySetException(ex);
+			}
+			
+			return tcs.Task;
+		}
+		
+		public static Task<IRestResponse> ExecuteTask(this IRestClient client, IRestRequest request, CancellationToken token = default(CancellationToken))
+		{
+			var tcs = new TaskCompletionSource<IRestResponse>();
+			try {
+				var async = client.ExecuteAsync(request, (response, _) => {
+					if (token.IsCancellationRequested || response == null)
+						return;
+					
+					if (response.StatusCode != HttpStatusCode.OK) {
+						tcs.TrySetException(new DropboxException(response));
+					} else {
+						tcs.TrySetResult(response);
+					}
+				});
+				
+				token.Register(() => {
+					// Crashes on the device: see https://bugzilla.xamarin.com/show_bug.cgi?id=8407
+					// async.Abort();
+					tcs.TrySetCanceled();
+				});
+			} catch (Exception ex) {
+				tcs.TrySetException(ex);
+			}
+			
+			return tcs.Task;
+		}
+	}
 }
